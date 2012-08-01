@@ -63,7 +63,7 @@
 typedef struct {
     BOOL isValid;
     int atIndex;
-}validChar;
+} validChar;
 static inline validChar ValidCharMake(BOOL v, int ind){
     validChar val;
     val.isValid = v;
@@ -71,7 +71,7 @@ static inline validChar ValidCharMake(BOOL v, int ind){
     return val;
 }
 static inline validChar isValidHEXChar(NSString* hexChar, int index){
-    if (hexChar.length != 1) {
+    if ([hexChar length] != 1) {
         NSLog(@"To Long");
         return ValidCharMake(NO, index);
     }
@@ -79,7 +79,7 @@ static inline validChar isValidHEXChar(NSString* hexChar, int index){
                                                                         options:NSRegularExpressionCaseInsensitive 
                                                                           error:nil];
     __block validChar is = ValidCharMake(NO, index);
-    [ex enumerateMatchesInString:hexChar options:0 range:NSMakeRange(0, hexChar.length) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
+    [ex enumerateMatchesInString:hexChar options:0 range:NSMakeRange(0, [hexChar length]) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
         is = ValidCharMake(YES, index);
     }];
     return is;
