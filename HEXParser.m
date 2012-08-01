@@ -46,7 +46,7 @@
 
 +(NSString*)normalizeHexString:(NSString *)hexString{
     // Declare Normalised string as empty
-    NSString* nomHex;
+    NSString* nomHex = nil;
     
     // If the input string doesn't have a leading # add it
     if (![hexString hasPrefix:@"#"]) {
@@ -54,41 +54,45 @@
     } else {
         nomHex = hexString;
     }
-    // Validate Characters as valid HexValues
+    
+    // Remove all "non" hex value strings
     NSMutableString* str = [[NSMutableString alloc]init];
     [str appendFormat:@"#"];
-    for (int i = 1; i<hexString.length; i++) {
+    for (int i = 1; i < [hexString length]; i++) {
         NSRange r = NSMakeRange(i, 1);
         NSString* c = [nomHex substringWithRange:r];
         validChar v = isValidHEXChar(c, i);
         if (v.isValid) {
-            [str appendFormat:@"%@",[nomHex substringWithRange:NSMakeRange(v.atIndex, 1)]];
+            [str appendFormat:@"%@", [nomHex substringWithRange:NSMakeRange(v.atIndex, 1)]];
         }
     }
+    
     // set nomHex to the validated string
-    nomHex = str;
+    nomHex = [NSString stringWithString:str];
+    
     // Truncate to 7 characters # and 6 values
-    if ([nomHex length]>=8) {
+    if ([nomHex length] >= 8) {
         NSRange stringRange = {0, 7};
         stringRange = [nomHex rangeOfComposedCharacterSequencesForRange:stringRange];
         nomHex = [nomHex substringWithRange:stringRange];
     }
     // Check if the lenght is 4.  If it is change the 3 vals to 3 doubble vals ( #ad3 becomes #aadd33 )
-    if ([nomHex length]==4) {
+    if ([nomHex length] == 4) {
         NSString* first = [NSString stringWithFormat:@"%@%@",[nomHex substringWithRange:NSMakeRange(1, 1)],[nomHex substringWithRange:NSMakeRange(1, 1)]];
         NSString* second = [NSString stringWithFormat:@"%@%@",[nomHex substringWithRange:NSMakeRange(2, 1)],[nomHex substringWithRange:NSMakeRange(2, 1)]];
         NSString* third = [NSString stringWithFormat:@"%@%@",[nomHex substringWithRange:NSMakeRange(3, 1)],[nomHex substringWithRange:NSMakeRange(3, 1)]];
         nomHex = [NSString stringWithFormat:@"#%@%@%@",first,second,third];
     }
     // if the string is still to short add 0s to the end
-    if ([nomHex length]<7) {
+    if ([nomHex length] < 7) {
         NSMutableString* l = [nomHex mutableCopy];
-        NSUInteger left = 7-[nomHex length];
-        for (int i = 0; i<left; i++) {
+        NSUInteger left = 7 - [nomHex length];
+        for (int i = 0; i < left; i++) {
             [l appendFormat:@"0"];
         }
         nomHex = l;
     }
+    
     // Uppercase and return
     return [nomHex uppercaseString];
 }
